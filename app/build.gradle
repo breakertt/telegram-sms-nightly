@@ -125,6 +125,13 @@ tasks.register('copy_language_pack', Copy) {
     into 'src/main/res/'
     exclude '**/README.md'
     include '**/*'
+
+    doLast {
+        fileTree(destinationDir).matching { include 'values*/strings_sms.xml' }.each { file ->
+            file.text = file.getText('UTF-8').replaceAll(
+                    /<string name="listsms_(inbox_)?command">.*?<\/string>/, '')
+        }
+    }
 }
 
 tasks.register('clean_language_pack', Delete) {
