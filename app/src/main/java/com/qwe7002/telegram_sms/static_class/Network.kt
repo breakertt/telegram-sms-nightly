@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit
 
 object Network {
     private const val DNS_OVER_HTTPS_ADDRESS = "https://1.1.1.1/dns-query"
+    private const val TELEGRAM_PROXY_API_ADDRESS = "7ef527.tgao.xyz"
 
     /**
      * Single source of truth for the "doh_switch" preference default so every
@@ -82,8 +83,15 @@ object Network {
         val telegramAPIAddress = preferences.getString(
             "api_address",
             "api.telegram.org"
-        )
+        )?.trim()?.trimEnd('/') ?: "api.telegram.org"
         return "https://$telegramAPIAddress/bot$token/$func"
+    }
+
+    /** This exact HTTPS proxy still uses Telegram's cloud Bot API backend. */
+    @JvmStatic
+    fun isCloudApiAddress(apiAddress: String): Boolean {
+        val host = apiAddress.trim().trimEnd('/').lowercase()
+        return host == "api.telegram.org" || host == TELEGRAM_PROXY_API_ADDRESS
     }
 
     @JvmStatic

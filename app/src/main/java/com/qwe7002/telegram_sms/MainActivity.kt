@@ -49,6 +49,7 @@ import com.qwe7002.telegram_sms.data_structure.telegram.RequestMessage
 import com.qwe7002.telegram_sms.static_class.Network.DOH_SWITCH_DEFAULT
 import com.qwe7002.telegram_sms.static_class.Network.getOkhttpObj
 import com.qwe7002.telegram_sms.static_class.Network.getUrl
+import com.qwe7002.telegram_sms.static_class.Network.isCloudApiAddress
 import com.qwe7002.telegram_sms.static_class.Other.parseStringToLong
 import com.qwe7002.telegram_sms.static_class.Service.isNotifyListener
 import com.qwe7002.telegram_sms.static_class.Service.startService
@@ -440,11 +441,9 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                 }
             }
-            if (preferences.getString(
-                    "api_address",
-                    "api.telegram.org"
-                ) != "api.telegram.org"
-            ) {
+            val apiAddress = preferences.getString("api_address", "api.telegram.org")
+                ?: "api.telegram.org"
+            if (!isCloudApiAddress(apiAddress)) {
                 checkAndLogout(botTokenEditView.text.toString().trim { it <= ' ' })
             }
 
@@ -1008,7 +1007,7 @@ class MainActivity : AppCompatActivity() {
                         return@setPositiveButton
                     }
                     preferences.putString("api_address", apiAddressText)
-                    if (preferences.contains("initialized") && apiAddressText != "api.telegram.org") {
+                    if (preferences.contains("initialized") && !isCloudApiAddress(apiAddressText)) {
                         checkAndLogout(preferences.getString("bot_token", "").toString())
                     }
                 }
@@ -1262,4 +1261,3 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
-
