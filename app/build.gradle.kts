@@ -86,10 +86,6 @@ android {
             if (file("keys.jks").exists()) {
                 signingConfig = signingConfigs.getByName("release")
             }
-            ndk {
-                //noinspection ChromeOsAbiSupport
-                abiFilters += listOf("armeabi-v7a", "arm64-v8a")
-            }
         }
 
         getByName("debug") {
